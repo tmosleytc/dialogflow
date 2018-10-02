@@ -18,7 +18,6 @@ import (
 
 	"golang.org/x/crypto/acme/autocert"
 	"golang.org/x/crypto/bcrypt"
-	"google.golang.org/api/dialogflow/v2"
 )
 
 // ErrEmptyHashedPassword is returned from ListenAndServe and ListenAndServeTLS when basic
@@ -35,7 +34,7 @@ var DefaultCacheDirectory = "/var/lib/dialogflow/fulfillment"
 
 // An ActionFunc processes an dialogflow.WebhookRequest and returns a
 // dialogflow.WebhookResponse.
-type ActionFunc func(*dialogflow.GoogleCloudDialogflowV2WebhookRequest) (*dialogflow.GoogleCloudDialogflowV2WebhookResponse, error)
+type ActionFunc func(*WebhookRequest) (*WebhookResponse, error)
 
 // An Actions represents the supported actions of a fulfillment server.
 type Actions map[string]ActionFunc
@@ -146,7 +145,7 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	r.Body.Close()
 
-	var webhookRequest dialogflow.GoogleCloudDialogflowV2WebhookRequest
+	var webhookRequest WebhookRequest
 	err = json.Unmarshal(body, &webhookRequest)
 	if err != nil {
 		log.Println(err)
